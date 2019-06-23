@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion project.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion project.appMinSdkVersion
+        targetSdkVersion project.targetSdkVersion
+
+        ndk {
+            abiFilters "x86"
+            abiFilters "armeabi"
+        }
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly "com.android.support:appcompat-v7:${project.supportLibVersion}"
+    compileOnly "com.android.support:support-compat:${project.supportLibVersion}"
+    compileOnly 'com.android.support.constraint:constraint-layout:1.1.3'
+    //
+    compileOnly "com.alibaba:fastjson:${project.fastjsonLibVersion}"
+    compileOnly "com.taobao.android:weex_sdk:${project.weex_sdkLibVersion}"
+    compileOnly "com.taobao.android:weexplugin-processor:1.3"
+    //
+    compileOnly project(":eeui")
+}
