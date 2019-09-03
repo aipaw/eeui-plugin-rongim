@@ -34,7 +34,7 @@ public class FakeServer {
     public static void getToken(UserInfo user, final HttpUtil.OnResponse callback) {
         final String post = "userId=" + user.getUserId() + "&name=" + user.getName() + "&portraitUri=" + user.getPortraitUri();
         final String md5Id = md5(eeui_rongim.appKey + "@" + eeui_rongim.appSecret + "@" + post);
-        String token = eeuiCommon.getCachesString(eeui.getApplication(), "rongimToken", md5Id, "");
+        String token = eeuiCommon.getCachesString(eeui.getApplication(), "__system:rongimToken:" + md5Id, "");
         if (!"".equals(token)) {
             if (callback != null) {
                 callback.onResponse(200, token);
@@ -53,7 +53,7 @@ public class FakeServer {
                     if ("".equals(token)) {
                         code = -1;
                     } else {
-                        eeuiCommon.setCachesString(eeui.getApplication(), "rongimToken", md5Id, token, 3600);
+                        eeuiCommon.setCachesString(eeui.getApplication(), "__system:rongimToken:" + md5Id, token, 3600);
                     }
                 }
                 callback.onResponse(code, token);
