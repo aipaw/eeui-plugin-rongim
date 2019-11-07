@@ -320,6 +320,42 @@ public class eeuiRongmModule extends WXModule {
             public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
                 Map<String, Object> data = new HashMap<>();
                 data.put("status", "error");
+                data.put("code", errorCode.getValue());
+                data.put("error", errorCode.getMessage());
+                invoke(callback, data);
+            }
+        });
+    }
+
+    /**
+     * 向个人发送文本消息
+     * @param text
+     * @param callback
+     */
+    @JSMethod
+    public void sendTextMessageToUserid(String userid, String text, final JSCallback callback) {
+        if (text == null) {
+            return;
+        }
+        eeui_rongim.sendMessage(userid, TextMessage.obtain(text), new IRongCallback.ISendMessageCallback() {
+            @Override
+            public void onAttached(io.rong.imlib.model.Message message) {
+
+            }
+
+            @Override
+            public void onSuccess(io.rong.imlib.model.Message message) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("status", "success");
+                invoke(callback, data);
+            }
+
+            @Override
+            public void onError(io.rong.imlib.model.Message message, RongIMClient.ErrorCode errorCode) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("status", "error");
+                data.put("code", errorCode.getValue());
+                data.put("error", errorCode.getMessage());
                 invoke(callback, data);
             }
         });

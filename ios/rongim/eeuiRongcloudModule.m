@@ -36,6 +36,7 @@ WX_EXPORT_METHOD(@selector(quitChatRoom:))
 WX_EXPORT_METHOD(@selector(addEventHandler:))
 WX_EXPORT_METHOD(@selector(removeEventHandler))
 WX_EXPORT_METHOD(@selector(sendTextMessage:callback:))
+WX_EXPORT_METHOD(@selector(sendTextMessageToUserid:text:callback:))
 
 - (void)login:(id)params callback:(WXModuleKeepAliveCallback)callback
 {
@@ -295,12 +296,136 @@ WX_EXPORT_METHOD(@selector(sendTextMessage:callback:))
                                            }                                       }
                                          error:^(RCErrorCode nErrorCode, long messageId) {
 
-                                             callback(@{@"status":@"error"}, NO);
+                                             callback(@{@"status":@"error", @"code":@(nErrorCode), @"error":[self ErrorCodeMsg:nErrorCode]}, NO);
 
                                              if (ws.eventHeandlerCallback) {
                                                  NSDictionary *result = @{@"status":@"send_error", @"userid":userid, @"username":username, @"userimg":userimg, @"body":body, @"extra":extra};
                                                  ws.eventHeandlerCallback(result, YES);
                                              }                                         }];
+}
+
+- (void)sendTextMessageToUserid:(NSString*)targetId text:(NSString*)text callback:(WXModuleKeepAliveCallback)callback
+{
+    RCTextMessage *msgContent = [RCTextMessage messageWithContent:text];
+    msgContent.senderUserInfo = [[RCIMClient sharedRCIMClient] currentUserInfo];
+
+    NSString *userid = msgContent.senderUserInfo.userId ? msgContent.senderUserInfo.userId : @"";
+    NSString *username = msgContent.senderUserInfo.name ? msgContent.senderUserInfo.name : @"";
+    NSString *userimg = msgContent.senderUserInfo.portraitUri ? msgContent.senderUserInfo.portraitUri : @"";
+    NSString *body = msgContent.content ? msgContent.content : @"";
+    NSString *extra = msgContent.extra ? msgContent.extra : @"";
+    __weak typeof(eeuiRongcloudModule) *ws = self;
+    [[RCIMClient sharedRCIMClient] sendMessage:ConversationType_PRIVATE
+                                      targetId:targetId
+                                       content:msgContent
+                                   pushContent:nil
+                                      pushData:nil
+                                       success:^(long messageId) {
+                                           callback(@{@"status":@"success"}, NO);
+
+                                           if (ws.eventHeandlerCallback) {
+                                               NSDictionary *result = @{@"status":@"send", @"userid":userid, @"username":username, @"userimg":userimg, @"body":body, @"extra":extra};
+                                               ws.eventHeandlerCallback(result, YES);
+                                           }                                       }
+                                         error:^(RCErrorCode nErrorCode, long messageId) {
+
+                                             callback(@{@"status":@"error", @"code":@(nErrorCode), @"error":[self ErrorCodeMsg:nErrorCode]}, NO);
+
+                                             if (ws.eventHeandlerCallback) {
+                                                 NSDictionary *result = @{@"status":@"send_error", @"userid":userid, @"username":username, @"userimg":userimg, @"body":body, @"extra":extra};
+                                                 ws.eventHeandlerCallback(result, YES);
+                                             }                                         }];
+}
+
+- (NSString *)ErrorCodeMsg:(RCErrorCode)code {
+    if (code == ERRORCODE_UNKNOWN) {
+        return @"未知错误（预留）";
+    }
+    else if (code == REJECTED_BY_BLACKLIST) {
+        return @"已被对方加入黑名单";
+    }
+    else if (code == ERRORCODE_TIMEOUT) {
+        return @"超时";
+    }
+    else if (code == SEND_MSG_FREQUENCY_OVERRUN) {
+        return @"发送消息频率过高，1秒钟最多只允许发送5条消息";
+    }
+    else if (code == NOT_IN_DISCUSSION) {
+        return @"不在该讨论组中";
+    }
+    else if (code == NOT_IN_GROUP) {
+        return @"不在该群组中";
+    }
+    else if (code == FORBIDDEN_IN_GROUP) {
+        return @"在群组中已被禁言";
+    }
+    else if (code == NOT_IN_CHATROOM) {
+        return @"不在该聊天室中";
+    }
+    else if (code == FORBIDDEN_IN_CHATROOM) {
+        return @"在该聊天室中已被禁言";
+    }
+    else if (code == KICKED_FROM_CHATROOM) {
+        return @"已被踢出并禁止加入聊天室";
+    }
+    else if (code == RC_CHATROOM_NOT_EXIST) {
+        return @"聊天室不存在";
+    }
+    else if (code == RC_CHATROOM_IS_FULL) {
+        return @"聊天室成员超限";
+    }
+    else if (code == RC_PARAMETER_INVALID_CHATROOM) {
+        return @"聊天室接口参数无效";
+    }
+    else if (code == RC_ROAMING_SERVICE_UNAVAILABLE_CHATROOM) {
+        return @"聊天室云存储业务未开通";
+    }
+    else if (code == RC_CHANNEL_INVALID) {
+        return @"当前连接不可用（连接已经被释放）";
+    }
+    else if (code == RC_NETWORK_UNAVAILABLE) {
+        return @"当前连接不可用";
+    }
+    else if (code == RC_MSG_RESPONSE_TIMEOUT) {
+        return @"消息响应超时";
+    }
+    else if (code == CLIENT_NOT_INIT) {
+        return @"SDK没有初始化，在使用SDK任何功能之前，必须先Init。";
+    }
+    else if (code == DATABASE_ERROR) {
+        return @"数据库错误，请检查您使用的Token和userId是否正确。";
+    }
+    else if (code == INVALID_PARAMETER) {
+        return @"开发者接口调用时传入的参数错误，请检查接口调用时传入的参数类型和值。";
+    }
+    else if (code == MSG_ROAMING_SERVICE_UNAVAILABLE) {
+        return @"历史消息云存储业务未开通";
+    }
+    else if (code == INVALID_PUBLIC_NUMBER) {
+        return @"无效的公众号。(由会话类型和Id所标识的公众号会话是无效的)";
+    }
+    else if (code == RC_MSG_SIZE_OUT_OF_LIMIT) {
+        return @"消息大小超限，消息体（序列化成json格式之后的内容）最大128k bytes。";
+    }
+    else if (code == RC_RECALLMESSAGE_PARAMETER_INVALID) {
+        return @"撤回消息参数无效。";
+    }
+    else if (code == RC_PUSHSETTING_PARAMETER_INVALID) {
+        return @"push设置参数无效。";
+    }
+    else if (code == RC_OPERATION_BLOCKED) {
+        return @"操作被禁止。";
+    }
+    else if (code == RC_OPERATION_NOT_SUPPORT) {
+        return @"操作不支持。";
+    }
+    else if (code == RC_MSG_BLOCKED_SENSITIVE_WORD) {
+        return @"发送的消息中包含敏感词 （发送方发送失败，接收方不会收到消息）";
+    }
+    else if (code == RC_MSG_REPLACED_SENSITIVE_WORD) {
+        return @"消息中敏感词已经被替换 （接收方可以收到被替换之后的消息）";
+    }
+    return @"";
 }
 
 @end

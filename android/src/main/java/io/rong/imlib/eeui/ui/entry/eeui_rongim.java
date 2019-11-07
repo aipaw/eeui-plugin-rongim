@@ -238,6 +238,22 @@ public class eeui_rongim {
     }
 
     /**
+     * 向个人发送文本消息
+     * @param userid
+     * @param msgContent
+     * @param callback
+     */
+    public static void sendMessage(final String userid, final MessageContent msgContent, IRongCallback.ISendMessageCallback callback) {
+        if (currentUser == null) {
+            throw new RuntimeException("currentUser should not be null.");
+        }
+
+        msgContent.setUserInfo(currentUser);
+        Message msg = Message.obtain(userid, Conversation.ConversationType.PRIVATE, msgContent);
+        RongIMClient.getInstance().sendMessage(msg, null, null, callback);
+    }
+
+    /**
      * 添加IMLib 事件接收者。
      *
      * @param handler
