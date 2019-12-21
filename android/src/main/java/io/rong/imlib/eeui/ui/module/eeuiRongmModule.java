@@ -32,8 +32,8 @@ public class eeuiRongmModule extends WXModule {
     private static final String TAG = "eeuiRongmModule";
 
     //事件接收者（用于防止重复监听）
-    private Handler mEventHandler;
-    private JSCallback mEventHandlerJSCallback;
+    private static Handler mEventHandler;
+    private static JSCallback mEventHandlerJSCallback;
 
     private void invoke(JSCallback callback, Object data) {
         if (callback != null) {

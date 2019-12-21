@@ -18,8 +18,8 @@ Pod::Spec.new do |s|
   s.source_files  = "rongim", "**/**/*.{h,m,mm,c}"
   s.exclude_files = "Source/Exclude"
   s.resources = 'rongim/Source/*.*'
-  s.vendored_libraries = 'rongim/Utility/Rong_Cloud_iOS_IMLib_SDK_v2_9_1_Stable/IMLib/*.a'
-  s.vendored_frameworks = 'rongim/Utility/Rong_Cloud_iOS_IMLib_SDK_v2_9_1_Stable/IMLib/*.framework'
+  s.vendored_libraries = 'rongim/Utility/Rong_Cloud_iOS_IMLib_SDK_v2_10_2_Dev/IMLib/*.a'
+  s.vendored_frameworks = 'rongim/Utility/Rong_Cloud_iOS_IMLib_SDK_v2_10_2_Dev/IMLib/*.framework'
   s.platform     = :ios, "8.0"
   s.requires_arc = true
 
