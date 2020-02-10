@@ -28,7 +28,7 @@
 
 @implementation eeuiRongcloudModule
 
-WX_PlUGIN_EXPORT_MODULE(rongim, eeuiRongcloudModule)
+WX_PlUGIN_EXPORT_MODULE(eeuiRongim, eeuiRongcloudModule)
 WX_EXPORT_METHOD(@selector(login:callback:))
 WX_EXPORT_METHOD(@selector(logout))
 WX_EXPORT_METHOD(@selector(joinChatRoom:defMessageCount:callback:))
@@ -43,7 +43,7 @@ WX_EXPORT_METHOD(@selector(sendTextMessageToUserid:text:callback:))
     if (![params isKindOfClass:[NSDictionary class]]) {
         return;
     }
-    NSURL *URL = [NSURL URLWithString:@"http://api.cn.ronghub.com/user/getToken.json"];
+    NSURL *URL = [NSURL URLWithString:@"https://api-cn.ronghub.com/user/getToken.json"];
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     config.requestCachePolicy = NSURLRequestUseProtocolCachePolicy;
 

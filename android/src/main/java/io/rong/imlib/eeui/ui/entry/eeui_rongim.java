@@ -49,7 +49,7 @@ public class eeui_rongim {
         if (!isRegister) {
             isRegister = true;
             try {
-                WXSDKEngine.registerModule("rongim", eeuiRongmModule.class);
+                WXSDKEngine.registerModule("eeuiRongim", eeuiRongmModule.class);
             } catch (WXException e) {
                 e.printStackTrace();
             }
