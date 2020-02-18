@@ -2,7 +2,7 @@ package io.rong.imlib.library.fakeserver;
 
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
